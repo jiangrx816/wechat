@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (ps *ApiService) ApiServiceIndex(ctx *gin.Context, page int, size int) (resp response.NCLogListResponse, apiErr api.Error) {
+func (ps *ApiService) ApiServiceIndex(ctx *gin.Context, page int, size int) (resp response.IndexResponse, apiErr api.Error) {
 	if size < 0 {
 		size = common.DEFAULT_PAGE_SIZE
 	}
