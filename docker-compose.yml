@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  wechat-db:
+    image: mysql:8.0.34
+    container_name: wechat-db
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      TZ: Asia/Shanghai
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./script/docker/initdb:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p123456"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - tool-net
+
+  wechat-app:
+    build: .
+    container_name: wechat-app
+    ports:
+      - "8080:8080"
+    # depends_on:
+      # mysql-db:
+        # condition: service_healthy
+    volumes:
+      - ./config/app.yml:/app/config/app.yml      # 挂载配置文件 宿主机目录:容器目录
+      # todo 需要将对应的路径修改为自己的路径
+      - /Users/jiang/data/scripts:/data/scripts   # 挂载Python脚本 宿主机目录:容器目录
+      # 把 tools 容器的 /data/nc_path 目录映射到宿主机 挂载 nc_path 目录到宿主机的一个共享路径，用来通过nginx访问文件
+      - /Users/jiang/data/wechat:/data/wechat  # 意思就是将宿主机的 /Users/jiang/ruoxi/nc_path 目录挂载到容器的 /data/nc_path 目录上
+    networks:
+      - tool-net
+
+  wechat-nginx:
+    image: nginx:latest
+    container_name: wechat-nginx
+    ports:
+      - "80:80"
+    volumes:
+      # 挂载 Nginx 配置文件
+      - ./script/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      # 挂载 tools 容器生成的 nc_path 目录 todo 需要将对应的路径修改为自己的路径
+      # 配置一个静态目录指向 /Users/jiang/data/nc_path
+      - /Users/jiang/data/wechat:/usr/share/nginx/html/wechat:ro
+    # depends_on:
+      # - tools
+    networks:
+      - tool-net
+
+volumes:
+  mysql_data:
+
+networks:
+  tool-net:
+    driver: bridge

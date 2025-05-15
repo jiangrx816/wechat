@@ -1,0 +1,10 @@
+app: tools
+debug: true
+db:
+  tool:
+    dialect: mysql
+    dsn: root:123456@tcp(wechat-db:3306)/nc?charset=utf8mb4&parseTime=True&loc=Asia%2FShanghai
+log:
+  outputs:
+    - stdout
+    - ./logs/api.log
