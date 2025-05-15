@@ -12,6 +12,21 @@ import (
 	"github.com/jiangrx816/wechat/utils"
 )
 
+/**
+ * @Description 获取初始的栏目列表
+ */
+func (ps *ChineseService) ApiServiceGetCategoryList(ctx *gin.Context, typeId int) (resp response.ChineseBookNavNameResponse, apiErr api.Error) {
+	utils.DefaultIntOne(&typeId)
+	db := model.Default().Model(&model.SBookName{}).Debug()
+	db = db.Where("status = 1 and s_type = ?", typeId)
+	db = db.Order("s_sort asc").Order("id asc")
+	db.Find(&resp.List)
+	return
+}
+
+/**
+ * @Description 获取中文绘本列表
+ **/
 func (ps *ChineseService) ApiServiceChineseBookList(ctx *gin.Context, page, level int) (resp response.ChineseBookResponse, apiErr api.Error) {
 	utils.DefaultIntOne(&page)
 	utils.DefaultIntOne(&level)
