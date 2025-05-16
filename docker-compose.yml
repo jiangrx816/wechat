@@ -18,7 +18,7 @@ services:
       timeout: 3s
       retries: 10
     networks:
-      - wechat-net
+      - common-app-net
 
   wechat:
     build: .
@@ -32,25 +32,11 @@ services:
       # 把 wechat 容器的 /data/wechat 目录映射到宿主机 挂载 wechat 目录到宿主机的一个共享路径，用来通过nginx访问文件
       - /Users/jiang/data/wechat:/data/wechat  # 意思就是将宿主机的 /Users/jiang/data/wechat 目录挂载到容器的 /data/wechat 目录上
     networks:
-      - wechat-net
-
-  wechat-nginx:
-    image: nginx:latest
-    container_name: wechat-nginx
-    ports:
-      - "81:80"
-    volumes:
-      # 挂载 Nginx 配置文件
-      - ./script/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      # 挂载 wechat 容器生成的 wechat 目录 todo 需要将对应的路径修改为自己的路径
-      # 配置一个静态目录指向 /Users/jiang/data/wechat
-      - /Users/jiang/data/wechat:/usr/share/nginx/html/wechat:ro
-    networks:
-      - wechat-net
+      - common-app-net
 
 volumes:
   mysql_data:
 
 networks:
-  wechat-net:
-    driver: bridge
+  common-app-net:
+    external: true
