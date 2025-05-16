@@ -9,7 +9,7 @@ COPY . .
 
 # 下载依赖并构建（关闭 CGO）
 RUN go mod download && \
-    CGO_ENABLED=0 GOOS=linux go build -o tool ./main.go
+    CGO_ENABLED=0 GOOS=linux go build -o wechat ./main.go
 
 # 第二阶段：运行时镜像
 FROM python:3.10-bullseye
@@ -40,8 +40,8 @@ RUN pip install \
     netCDF4==1.7.2
 
 # 拷贝执行文件
-COPY --from=builder /app/tool .
+COPY --from=builder /app/wechat .
 COPY config/app.yml /app/config/app.yml
 
 EXPOSE 8080
-CMD ["/bin/sh", "-c", "/app/tool migrate up && exec /app/tool"]
+CMD ["/bin/sh", "-c", "/app/wechat migrate up && exec /app/wechat"]
