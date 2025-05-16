@@ -29,7 +29,23 @@ func Migrate() *cli.Command {
 					tables := []TableWithComment{
 						{
 							Model:   &model.SBookName{},
-							Comment: "COMMENT='绘本名称表'", // NcLog 表注释
+							Comment: "COMMENT='绘本名称表'", // SBookName 表注释
+						},
+						{
+							Model:   &model.SChinesePicture{},
+							Comment: "COMMENT='中文绘本表'", // SChinesePicture 表注释
+						},
+						{
+							Model:   &model.SChinesePictureInfo{},
+							Comment: "COMMENT='中文绘本详情表'", // SChinesePictureInfo 表注释
+						},
+						{
+							Model:   &model.SEnglishPicture{},
+							Comment: "COMMENT='英文绘本表'", // SEnglishPicture 表注释
+						},
+						{
+							Model:   &model.SEnglishPictureInfo{},
+							Comment: "COMMENT='英文绘本详情表'", // SEnglishPictureInfo 表注释
 						},
 						// 添加其他表及注释...
 					}
