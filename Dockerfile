@@ -43,5 +43,5 @@ RUN pip install \
 COPY --from=builder /app/wechat .
 COPY config/app.yml /app/config/app.yml
 
-EXPOSE 8080
+EXPOSE 8081
 CMD ["/bin/sh", "-c", "/app/wechat migrate up && exec /app/wechat"]
