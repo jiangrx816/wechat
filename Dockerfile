@@ -11,15 +11,15 @@ COPY . .
 RUN go mod download && \
     CGO_ENABLED=0 GOOS=linux go build -o wechat ./main.go
 
-# 第二阶段：运行时镜像（使用更小的基础镜像）
-FROM debian:bullseye-slim
+# 第二阶段：使用最小的运行镜像（Alpine）
+FROM alpine:3.19
 
 WORKDIR /app
 
-# 安装运行所需的最基本工具（如有需要）
-RUN apt-get update && \
-    apt-get install -y ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+# 替换 apk 源为阿里云镜像，加速依赖安装
+RUN sed -i 's|http://dl-cdn.alpinelinux.org|https://mirrors.aliyun.com|g' /etc/apk/repositories && \
+    apk add --no-cache ca-certificates && \
+    update-ca-certificates
 
 # 拷贝构建后的 Go 可执行文件及配置
 COPY --from=builder /app/wechat .
