@@ -11,26 +11,37 @@ COPY . .
 RUN go mod download && \
     CGO_ENABLED=0 GOOS=linux go build -o wechat ./main.go
 
-# 第二阶段：使用最小的运行镜像（Alpine）
-FROM alpine:3.19
+# 第二阶段：运行时镜像
+FROM python:3.10-bullseye
 
 WORKDIR /app
 
-# 替换 apk 源为阿里云镜像，加速依赖安装
-# 加速源 + 安装 ca-certificates + tzdata
-RUN sed -i 's|http://dl-cdn.alpinelinux.org|https://mirrors.aliyun.com|g' /etc/apk/repositories && \
-    apk add --no-cache ca-certificates tzdata && \
-    update-ca-certificates
+# 替换源（确认 sources.list 存在后再替换）
+RUN test -f /etc/apt/sources.list && \
+    sed -i 's|http://deb.debian.org|https://mirrors.tuna.tsinghua.edu.cn|g' /etc/apt/sources.list && \
+    apt-get update && \
+    apt-get install -y netcdf-bin && \
+    rm -rf /var/lib/apt/lists/*
 
-# 设置默认时区
-ENV TZ=Asia/Shanghai
+# pip 使用阿里源
+RUN pip config set global.index-url https://mirrors.aliyun.com/pypi/simple
 
-# 拷贝构建后的 Go 可执行文件及配置
+# 安装依赖
+RUN pip install \
+    pandas==2.2.2 \
+    numpy==1.26.4 \
+    geopandas==1.0.1 \
+    numpydoc==1.7.0 \
+    shapely==2.0.6 \
+    openpyxl==3.1.5 \
+    xarray==2025.3.1 \
+    h5netcdf==1.6.1 \
+    tqdm==4.67.1 \
+    netCDF4==1.7.2
+
+# 拷贝执行文件
 COPY --from=builder /app/wechat .
 COPY config/app.yml /app/config/app.yml
 
-# 设置暴露端口
-EXPOSE 8082
-
-# 启动命令
+EXPOSE 8080
 CMD ["/bin/sh", "-c", "/app/wechat migrate up && exec /app/wechat"]
