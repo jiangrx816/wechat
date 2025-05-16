@@ -35,3 +35,30 @@ func (ph *ChineseHandler) ApiChineseBookList(ctx *gin.Context) {
 	}
 	ctx.JSON(errs.SucResp(response))
 }
+
+/**
+ * @Description 获取中文绘本详情
+ **/
+func (ph *ChineseHandler) ApiChineseBookInfo(ctx *gin.Context) {
+	bookId := ctx.Query("book_id")
+	response, err := ph.service.ApiServiceChineseBookInfo(bookId)
+	if err != nil {
+		ctx.JSON(errs.ErrResp(err))
+		return
+	}
+	ctx.JSON(errs.SucResp(response))
+}
+
+/**
+ * @Description 获取中文绘本搜索列表
+ **/
+func (ph *ChineseHandler) ApiChineseBookSearch(ctx *gin.Context) {
+	page, _ := strconv.Atoi(ctx.Query("page"))
+	value := ctx.Query("value")
+	response, err := ph.service.ApiServiceChineseBookSearch(page, value)
+	if err != nil {
+		ctx.JSON(errs.ErrResp(err))
+		return
+	}
+	ctx.JSON(errs.SucResp(response))
+}

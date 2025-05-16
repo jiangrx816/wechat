@@ -2,14 +2,13 @@ package chinese_service
 
 import (
 	"math"
-	"sort"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jiangrx816/wechat/common"
 	"github.com/jiangrx816/wechat/common/response"
 	"github.com/jiangrx816/wechat/core/server/api"
-	"github.com/jiangrx816/wechat/model"
 	"github.com/jiangrx816/wechat/utils"
+	"github.com/jiangrx816/wechat/utils/errs"
 )
 
 /**
@@ -17,10 +16,12 @@ import (
  */
 func (ps *ChineseService) ApiServiceGetCategoryList(ctx *gin.Context, typeId int) (resp response.ChineseBookNavNameResponse, apiErr api.Error) {
 	utils.DefaultIntOne(&typeId)
-	db := model.Default().Model(&model.SBookName{}).Debug()
-	db = db.Where("status = 1 and s_type = ?", typeId)
-	db = db.Order("s_sort asc").Order("id asc")
-	db.Find(&resp.List)
+	bookNameList, err := ps.ServiceDBFindCategoryList(typeId)
+	if condition := err != nil; condition {
+		apiErr = errs.NewError(err.Error())
+		return
+	}
+	resp.List = bookNameList
 	return
 }
 
@@ -33,40 +34,60 @@ func (ps *ChineseService) ApiServiceChineseBookList(ctx *gin.Context, page, leve
 	size := common.DEFAULT_PAGE_SIZE
 	offset := size * (page - 1)
 
-	var bookList []model.SChinesePicture
-	db := model.Default().Model(&model.SChinesePicture{}).Debug()
-	db = db.Where("type = ? and status = 1", level).Count(&resp.Total)
-	db = db.Order("position desc").Limit(size).Offset(offset)
-	db.Find(&bookList)
-
-	var bookInfoCountList []response.ResponseBookInfoCount
-	db1 := model.Default().Model(&model.SChinesePictureInfo{}).Debug()
-	db1.Raw("SELECT book_id,count(id) as book_count FROM s_chinese_picture_info where status = 1 GROUP BY book_id").Scan(&bookInfoCountList)
-
-	var temp response.ResponseChineseBook
-	for _, item := range bookList {
-		temp.Id = item.Id
-		temp.BookId = item.BookId
-		temp.Title = item.Title
-		temp.Icon = item.Icon
-		temp.Level = item.Type
-		temp.Position = item.Position
-		resp.List = append(resp.List, temp)
+	// 从DB获取绘本列表数据
+	total, bookList, err := ps.ServiceDBFindBookList(level, size, offset)
+	if condition := err != nil; condition {
+		apiErr = errs.NewError(err.Error())
+		return
 	}
-	for index, item := range resp.List {
-		for _, it := range bookInfoCountList {
-			if item.BookId == it.BookId {
-				resp.List[index].BookCount = it.BookCount
-			}
-		}
-	}
-	sort.Slice(resp.List, func(i, j int) bool {
-		if resp.List[i].Position > resp.List[j].Position {
-			return true
-		}
-		return resp.List[i].Position == resp.List[j].Position && resp.List[i].Id < resp.List[j].Id
-	})
+
+	// 返回数据
 	resp.Page = page
-	resp.TotalPage = int(math.Ceil(float64(resp.Total) / float64(size)))
+	resp.List = bookList
+	resp.TotalPage = int(math.Ceil(float64(total) / float64(size)))
+
+	return
+}
+
+/**
+ * @Description 获取中文绘本详情数据
+ */
+func (ps *ChineseService) ApiServiceChineseBookInfo(bookId string) (resp response.ChineseBookInfoResponse, apiErr api.Error) {
+
+	// 从DB获取绘本详情数据
+	bookInfo, err := ps.ServiceDBFindBookInfo(bookId)
+
+	if condition := err != nil; condition {
+		apiErr = errs.NewError(err.Error())
+		return
+	}
+
+	// 返回数据
+	resp.Info = bookInfo
+
+	return
+}
+
+/**
+ * @Description 获取中文绘本搜索数据
+ */
+func (ps *ChineseService) ApiServiceChineseBookSearch(page int, value string) (resp response.ChineseBookResponse, apiErr api.Error) {
+	utils.DefaultIntOne(&page)
+	size := 100
+	offset := size * (page - 1)
+
+	// 从DB获取绘本搜索数据
+	total, bookList, err := ps.ServiceDBFindBookSearch(value, size, offset)
+	if condition := err != nil; condition {
+		apiErr = errs.NewError(err.Error())
+		return
+	}
+
+	// 返回数据
+	resp.Page = page
+	resp.Total = total
+	resp.List = bookList
+	resp.TotalPage = int(math.Ceil(float64(total) / float64(size)))
+
 	return
 }
