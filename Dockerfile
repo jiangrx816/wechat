@@ -11,37 +11,22 @@ COPY . .
 RUN go mod download && \
     CGO_ENABLED=0 GOOS=linux go build -o wechat ./main.go
 
-# 第二阶段：运行时镜像
-FROM python:3.10-bullseye
+# 第二阶段：运行时镜像（使用更小的基础镜像）
+FROM debian:bullseye-slim
 
 WORKDIR /app
 
-# 替换源（确认 sources.list 存在后再替换）
-RUN test -f /etc/apt/sources.list && \
-    sed -i 's|http://deb.debian.org|https://mirrors.tuna.tsinghua.edu.cn|g' /etc/apt/sources.list && \
-    apt-get update && \
-    apt-get install -y netcdf-bin && \
+# 安装运行所需的最基本工具（如有需要）
+RUN apt-get update && \
+    apt-get install -y ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
-# pip 使用阿里源
-RUN pip config set global.index-url https://mirrors.aliyun.com/pypi/simple
-
-# 安装依赖
-RUN pip install \
-    pandas==2.2.2 \
-    numpy==1.26.4 \
-    geopandas==1.0.1 \
-    numpydoc==1.7.0 \
-    shapely==2.0.6 \
-    openpyxl==3.1.5 \
-    xarray==2025.3.1 \
-    h5netcdf==1.6.1 \
-    tqdm==4.67.1 \
-    netCDF4==1.7.2
-
-# 拷贝执行文件
+# 拷贝构建后的 Go 可执行文件及配置
 COPY --from=builder /app/wechat .
 COPY config/app.yml /app/config/app.yml
 
-EXPOSE 8080
+# 设置暴露端口
+EXPOSE 8081
+
+# 启动命令
 CMD ["/bin/sh", "-c", "/app/wechat migrate up && exec /app/wechat"]
