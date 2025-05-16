@@ -1,4 +1,5 @@
 app: wechat
+port: 8081
 debug: true
 db:
   wechat:
