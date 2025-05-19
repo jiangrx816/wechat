@@ -3,7 +3,7 @@
 echo "等待 MySQL 启动完成..."
 
 # 等待 mysql 容器的健康检查通过
-until docker inspect --format "{{json .State.Health.Status }}" mysql-db | grep -q '"healthy"'; do
+until docker inspect --format "{{json .State.Health.Status }}" mysql | grep -q '"healthy"'; do
   sleep 2
 done
 

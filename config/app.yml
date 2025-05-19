@@ -4,7 +4,7 @@ debug: true
 db:
   wechat:
     dialect: mysql
-    dsn: root:123456@tcp(mysql-db:3306)/wechat?charset=utf8mb4&parseTime=True&loc=Asia%2FShanghai
+    dsn: root:123456@tcp(mysql:3306)/wechat?charset=utf8mb4&parseTime=True&loc=Asia%2FShanghai
 log:
   outputs:
     - stdout
