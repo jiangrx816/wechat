@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source .env
+source /root/.env
 
 echo "等待 MySQL 启动完成..."
 
