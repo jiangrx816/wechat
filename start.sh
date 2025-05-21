@@ -11,9 +11,9 @@ echo "MySQL 已就绪，开始检查并创建数据库..."
 
 # Step 2: 初始化数据库
 # 给与可执行的权限
-chmod +x ./script/docker/initdb/wechat-db.sh
+chmod +x ./script/initdb/create-db.sh
 
-./script/docker/initdb/wechat-db.sh
+./script/initdb/create-db.sh
 
 # Step 3: 启动 wechat 服务
 docker-compose -f docker-compose.yml up -d
