@@ -43,6 +43,7 @@ func (ps *ChineseService) ApiServiceChineseBookList(ctx *gin.Context, page, leve
 
 	// 返回数据
 	resp.Page = page
+	resp.Total = total
 	resp.List = bookList
 	resp.TotalPage = int(math.Ceil(float64(total) / float64(size)))
 
