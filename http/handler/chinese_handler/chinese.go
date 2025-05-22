@@ -65,34 +65,6 @@ func (ph *WechatHandler) ApiChineseBookSearch(ctx *gin.Context) {
 }
 
 /**
- * @Description 获取英文绘本列表
- **/
-func (ph *WechatHandler) ApiEnglishBookList(ctx *gin.Context) {
-	offset, _ := strconv.Atoi(ctx.Query("offset"))
-	typeId, _ := strconv.Atoi(ctx.Query("type_id"))
-
-	response, err := ph.service.ApiServiceEnglishBookList(ctx, typeId, offset)
-	if err != nil {
-		ctx.JSON(errs.ErrResp(err))
-		return
-	}
-	ctx.JSON(errs.SucResp(response))
-}
-
-/**
- * @Description 获取英文绘本详情
- **/
-func (ph *WechatHandler) ApiEnglishBookInfo(ctx *gin.Context) {
-	bookId, _ := strconv.Atoi(ctx.Query("book_id"))
-	response, err := ph.service.ApiServiceEnglishBookInfo(ctx, bookId)
-	if err != nil {
-		ctx.JSON(errs.ErrResp(err))
-		return
-	}
-	ctx.JSON(errs.SucResp(response))
-}
-
-/**
  * @Description 处理数据
  **/
 func (ph *WechatHandler) ApiEnglishHandleData(ctx *gin.Context) {
