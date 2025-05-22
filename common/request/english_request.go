@@ -34,5 +34,6 @@ type RequestEnglishInfoParam struct {
 }
 
 type EnglishHandleDataRequest struct {
+	Level    int    `json:"level" binding:"required"`
 	FilePath string `json:"file_path" binding:"required"`
 }

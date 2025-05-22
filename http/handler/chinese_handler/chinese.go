@@ -101,7 +101,7 @@ func (ph *ChineseHandler) ApiEnglishHandleData(ctx *gin.Context) {
 		ctx.JSON(errs.SucErrResp("", "参数错误"))
 		return
 	}
-	response, err := ph.service.ApiServiceEnglishHandleData(ctx, json.FilePath)
+	response, err := ph.service.ApiServiceEnglishHandleData(ctx, json.Level, json.FilePath)
 	if err != nil {
 		ctx.JSON(errs.ErrResp(err))
 		return
