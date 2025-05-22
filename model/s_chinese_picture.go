@@ -9,7 +9,7 @@ type SChinesePicture struct {
 	Icon1     string `gorm:"column:icon_1;type:varchar(1024);comment:封面图;NOT NULL" json:"icon_1"`
 	Icon      string `gorm:"column:icon;type:varchar(1024);comment:封面图;NOT NULL" json:"icon"`
 	Type      int8   `gorm:"column:type;type:tinyint(1);default:1;comment:类型;NOT NULL" json:"type"`
-	Position  int8   `gorm:"column:position;type:int(11);default:0;comment:排序位置;NOT NULL" json:"position"`
+	Position  int    `gorm:"column:position;type:int(11);default:0;comment:排序位置;NOT NULL" json:"position"`
 	Status    int    `gorm:"column:status;type:tinyint(1);default:1;comment:启用状态，1启用,0禁用;NOT NULL" json:"status"`
 }
 

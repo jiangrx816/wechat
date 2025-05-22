@@ -23,7 +23,7 @@ type ResponseChineseBook struct {
 	Title     string `json:"title"`
 	Icon      string `json:"icon"`
 	Level     int8   `json:"-"`
-	Position  int8   `json:"-"`
+	Position  int    `json:"-"`
 	BookCount string `json:"book_count"`
 }
 

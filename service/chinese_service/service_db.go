@@ -1,8 +1,6 @@
 package chinese_service
 
 import (
-	"sort"
-
 	"github.com/jiangrx816/wechat/common/response"
 	"github.com/jiangrx816/wechat/model"
 )
@@ -49,12 +47,6 @@ func (ps *ChineseService) ServiceDBFindBookList(tType, size, offset int) (total 
 			}
 		}
 	}
-	sort.Slice(bookList, func(i, j int) bool {
-		if bookList[i].Position > bookList[j].Position {
-			return true
-		}
-		return bookList[i].Position == bookList[j].Position && bookList[i].Id < bookList[j].Id
-	})
 	return
 }
 
@@ -76,7 +68,7 @@ func (ps *ChineseService) ServiceDBFindBookSearch(name string, size, offset int)
 	db := model.Default().Model(&model.SChinesePicture{}).Debug()
 	db = db.Where("status = 1 and title like ?", "%"+name+"%")
 	db = db.Count(&total)
-	db = db.Order("position desc").Limit(size).Offset(offset)
+	db = db.Order("type asc,position desc").Limit(size).Offset(offset)
 	db.Find(&bookInitList)
 
 	var bookInfoCountList []response.ResponseBookInfoCount
@@ -100,12 +92,6 @@ func (ps *ChineseService) ServiceDBFindBookSearch(name string, size, offset int)
 			}
 		}
 	}
-	sort.Slice(bookList, func(i, j int) bool {
-		if bookList[i].Position > bookList[j].Position {
-			return true
-		}
-		return bookList[i].Position == bookList[j].Position && bookList[i].Id < bookList[j].Id
-	})
 
 	return
 }
