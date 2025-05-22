@@ -3,6 +3,7 @@ package chinese_handler
 import (
 	"strconv"
 
+	"github.com/jiangrx816/wechat/common/request"
 	"github.com/jiangrx816/wechat/utils/errs"
 
 	"github.com/gin-gonic/gin"
@@ -84,6 +85,23 @@ func (ph *ChineseHandler) ApiEnglishBookList(ctx *gin.Context) {
 func (ph *ChineseHandler) ApiEnglishBookInfo(ctx *gin.Context) {
 	bookId, _ := strconv.Atoi(ctx.Query("book_id"))
 	response, err := ph.service.ApiServiceEnglishBookInfo(ctx, bookId)
+	if err != nil {
+		ctx.JSON(errs.ErrResp(err))
+		return
+	}
+	ctx.JSON(errs.SucResp(response))
+}
+
+/**
+ * @Description 处理数据
+ **/
+func (ph *ChineseHandler) ApiEnglishHandleData(ctx *gin.Context) {
+	var json request.EnglishHandleDataRequest
+	if err := ctx.ShouldBindJSON(&json); err != nil {
+		ctx.JSON(errs.SucErrResp("", "参数错误"))
+		return
+	}
+	response, err := ph.service.ApiServiceEnglishHandleData(ctx, json.FilePath)
 	if err != nil {
 		ctx.JSON(errs.ErrResp(err))
 		return

@@ -22,5 +22,7 @@ func ChineseBookApi(r *gin.RouterGroup) {
 		prefixRouter.GET("/english/getBookList", apiHandler.ApiEnglishBookList)
 		// 英文绘本详情
 		prefixRouter.GET("/english/getBookInfo", apiHandler.ApiEnglishBookInfo)
+		// 处理数据
+		prefixRouter.POST("/english/handleData", apiHandler.ApiEnglishHandleData)
 	}
 }

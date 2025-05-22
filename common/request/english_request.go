@@ -32,3 +32,7 @@ type RequestEnglishInfoParam struct {
 	BookId int    `json:"bookid"`
 	Limit  int    `json:"limit"`
 }
+
+type EnglishHandleDataRequest struct {
+	FilePath string `json:"file_path" binding:"required"`
+}
