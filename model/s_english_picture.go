@@ -6,7 +6,7 @@ import (
 
 // 英语绘本
 type SEnglishPicture struct {
-	Id         uint      `gorm:"column:id;type:int(11) unsigned;primary_key;AUTO_INCREMENT;comment:主键id" json:"id"`
+	Id         int       `gorm:"column:id;type:int(11) unsigned;primary_key;AUTO_INCREMENT;comment:主键id" json:"id"`
 	BookId     string    `gorm:"column:book_id;type:char(32);comment:绘本id;NOT NULL" json:"book_id"`
 	Title      string    `gorm:"column:title;type:varchar(1024);comment:标题;NOT NULL" json:"title"`
 	Icon       string    `gorm:"column:icon;type:varchar(1024);comment:封面图;NOT NULL" json:"icon"`

@@ -18,6 +18,12 @@ func ChineseBookApi(r *gin.RouterGroup) {
 		prefixRouter.GET("/chinese/getBookInfo", apiHandler.ApiChineseBookInfo)
 		// 绘本搜索
 		prefixRouter.GET("/chinese/getBookSearch", apiHandler.ApiChineseBookSearch)
+		// 英文绘本列表
+		prefixRouter.GET("/english/getBookList", apiHandler.ApiEnglishBookList)
+		// 英文绘本详情
+		prefixRouter.GET("/english/getBookInfo", apiHandler.ApiEnglishBookInfo)
+		// 英文绘本搜索
+		prefixRouter.GET("/english/getBookSearch", apiHandler.ApiEnglishBookSearch)
 		// 处理数据
 		prefixRouter.POST("/english/handleData", apiHandler.ApiEnglishHandleData)
 	}
