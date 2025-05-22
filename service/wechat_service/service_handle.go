@@ -1,4 +1,4 @@
-package chinese_service
+package wechat_service
 
 import (
 	"encoding/json"
@@ -15,7 +15,7 @@ import (
 /**
  * @Description 处理数据
  */
-func (ps *ChineseService) ApiServiceEnglishHandleData(ctx *gin.Context, level int, filePath string) (resp string, apiErr api.Error) {
+func (ps *WechatService) ApiServiceEnglishHandleData(ctx *gin.Context, level int, filePath string) (resp string, apiErr api.Error) {
 
 	resp = "start english handle data"
 	// 异步处理数据
@@ -26,7 +26,7 @@ func (ps *ChineseService) ApiServiceEnglishHandleData(ctx *gin.Context, level in
 	return
 }
 
-func (ps *ChineseService) HandleEnglishData(ctx *gin.Context, level int, filePath string) (err error) {
+func (ps *WechatService) HandleEnglishData(ctx *gin.Context, level int, filePath string) (err error) {
 	// 1. 读取 JSON 文件
 	data, err := os.ReadFile(filePath)
 	if err != nil {

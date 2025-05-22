@@ -12,7 +12,7 @@ import (
 /**
  * @Description 获取初始的栏目列表
  **/
-func (ph *ChineseHandler) ApiGetCategoryList(ctx *gin.Context) {
+func (ph *WechatHandler) ApiGetCategoryList(ctx *gin.Context) {
 	typeId, _ := strconv.Atoi(ctx.Query("type"))
 	response, err := ph.service.ApiServiceGetCategoryList(ctx, typeId)
 	if err != nil {
@@ -25,7 +25,7 @@ func (ph *ChineseHandler) ApiGetCategoryList(ctx *gin.Context) {
 /**
  * @Description 获取中文绘本列表
  **/
-func (ph *ChineseHandler) ApiChineseBookList(ctx *gin.Context) {
+func (ph *WechatHandler) ApiChineseBookList(ctx *gin.Context) {
 	page, _ := strconv.Atoi(ctx.Query("page"))
 	level, _ := strconv.Atoi(ctx.Query("level"))
 
@@ -40,7 +40,7 @@ func (ph *ChineseHandler) ApiChineseBookList(ctx *gin.Context) {
 /**
  * @Description 获取中文绘本详情
  **/
-func (ph *ChineseHandler) ApiChineseBookInfo(ctx *gin.Context) {
+func (ph *WechatHandler) ApiChineseBookInfo(ctx *gin.Context) {
 	bookId := ctx.Query("book_id")
 	response, err := ph.service.ApiServiceChineseBookInfo(ctx, bookId)
 	if err != nil {
@@ -53,7 +53,7 @@ func (ph *ChineseHandler) ApiChineseBookInfo(ctx *gin.Context) {
 /**
  * @Description 获取中文绘本搜索列表
  **/
-func (ph *ChineseHandler) ApiChineseBookSearch(ctx *gin.Context) {
+func (ph *WechatHandler) ApiChineseBookSearch(ctx *gin.Context) {
 	page, _ := strconv.Atoi(ctx.Query("page"))
 	value := ctx.Query("value")
 	response, err := ph.service.ApiServiceChineseBookSearch(ctx, page, value)
@@ -67,7 +67,7 @@ func (ph *ChineseHandler) ApiChineseBookSearch(ctx *gin.Context) {
 /**
  * @Description 获取英文绘本列表
  **/
-func (ph *ChineseHandler) ApiEnglishBookList(ctx *gin.Context) {
+func (ph *WechatHandler) ApiEnglishBookList(ctx *gin.Context) {
 	offset, _ := strconv.Atoi(ctx.Query("offset"))
 	typeId, _ := strconv.Atoi(ctx.Query("type_id"))
 
@@ -82,7 +82,7 @@ func (ph *ChineseHandler) ApiEnglishBookList(ctx *gin.Context) {
 /**
  * @Description 获取英文绘本详情
  **/
-func (ph *ChineseHandler) ApiEnglishBookInfo(ctx *gin.Context) {
+func (ph *WechatHandler) ApiEnglishBookInfo(ctx *gin.Context) {
 	bookId, _ := strconv.Atoi(ctx.Query("book_id"))
 	response, err := ph.service.ApiServiceEnglishBookInfo(ctx, bookId)
 	if err != nil {
@@ -95,7 +95,7 @@ func (ph *ChineseHandler) ApiEnglishBookInfo(ctx *gin.Context) {
 /**
  * @Description 处理数据
  **/
-func (ph *ChineseHandler) ApiEnglishHandleData(ctx *gin.Context) {
+func (ph *WechatHandler) ApiEnglishHandleData(ctx *gin.Context) {
 	var json request.EnglishHandleDataRequest
 	if err := ctx.ShouldBindJSON(&json); err != nil {
 		ctx.JSON(errs.SucErrResp("", "参数错误"))

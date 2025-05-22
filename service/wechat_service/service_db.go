@@ -1,4 +1,4 @@
-package chinese_service
+package wechat_service
 
 import (
 	"github.com/jiangrx816/wechat/common/response"
@@ -8,7 +8,7 @@ import (
 /**
  * @Description 获取初始的栏目列表
  */
-func (ps *ChineseService) ServiceDBFindCategoryList(typeId int) (bookNameList []model.SBookName, err error) {
+func (ps *WechatService) ServiceDBFindCategoryList(typeId int) (bookNameList []model.SBookName, err error) {
 	db := model.Default().Model(&model.SBookName{}).Debug()
 	db = db.Where("status = 1 and s_type = ?", typeId)
 	db = db.Order("s_sort asc").Order("id asc")
@@ -19,7 +19,7 @@ func (ps *ChineseService) ServiceDBFindCategoryList(typeId int) (bookNameList []
 /**
  * @Description 获取中文绘本列表数据
  */
-func (ps *ChineseService) ServiceDBFindBookList(tType, size, offset int) (total int64, bookList []response.ResponseChineseBook, err error) {
+func (ps *WechatService) ServiceDBFindBookList(tType, size, offset int) (total int64, bookList []response.ResponseChineseBook, err error) {
 	var bookInitList []model.SChinesePicture
 	db := model.Default().Model(&model.SChinesePicture{}).Debug()
 	db = db.Where("type = ? and status = 1", tType).Count(&total)
@@ -53,7 +53,7 @@ func (ps *ChineseService) ServiceDBFindBookList(tType, size, offset int) (total 
 /**
  * @Description 获取中文绘本详情数据
  */
-func (ps *ChineseService) ServiceDBFindBookInfo(bookId string) (bookInfoList []response.ResponseChineseBookInfo, err error) {
+func (ps *WechatService) ServiceDBFindBookInfo(bookId string) (bookInfoList []response.ResponseChineseBookInfo, err error) {
 	db := model.Default().Model(&model.SChinesePictureInfo{}).Debug()
 	db = db.Where("book_id = ? and status = 1", bookId).Order("position asc")
 	err = db.Find(&bookInfoList).Error
@@ -63,7 +63,7 @@ func (ps *ChineseService) ServiceDBFindBookInfo(bookId string) (bookInfoList []r
 /**
  * @Description 获取中文绘本搜索数据
  */
-func (ps *ChineseService) ServiceDBFindBookSearch(name string, size, offset int) (total int64, bookList []response.ResponseChineseBook, err error) {
+func (ps *WechatService) ServiceDBFindBookSearch(name string, size, offset int) (total int64, bookList []response.ResponseChineseBook, err error) {
 	var bookInitList []model.SChinesePicture
 	db := model.Default().Model(&model.SChinesePicture{}).Debug()
 	db = db.Where("status = 1 and title like ?", "%"+name+"%")

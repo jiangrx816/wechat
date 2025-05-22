@@ -1,4 +1,4 @@
-package chinese_service
+package wechat_service
 
 import (
 	"bytes"
@@ -20,7 +20,7 @@ import (
 /**
  * @Description 获取初始的栏目列表
  */
-func (ps *ChineseService) ApiServiceGetCategoryList(ctx *gin.Context, typeId int) (resp response.ChineseBookNavNameResponse, apiErr api.Error) {
+func (ps *WechatService) ApiServiceGetCategoryList(ctx *gin.Context, typeId int) (resp response.ChineseBookNavNameResponse, apiErr api.Error) {
 	utils.DefaultIntOne(&typeId)
 	bookNameList, err := ps.ServiceDBFindCategoryList(typeId)
 	if condition := err != nil; condition {
@@ -34,7 +34,7 @@ func (ps *ChineseService) ApiServiceGetCategoryList(ctx *gin.Context, typeId int
 /**
  * @Description 获取中文绘本列表
  **/
-func (ps *ChineseService) ApiServiceChineseBookList(ctx *gin.Context, page, level int) (resp response.ChineseBookResponse, apiErr api.Error) {
+func (ps *WechatService) ApiServiceChineseBookList(ctx *gin.Context, page, level int) (resp response.ChineseBookResponse, apiErr api.Error) {
 	utils.DefaultIntOne(&page)
 	utils.DefaultIntOne(&level)
 	size := common.DEFAULT_PAGE_SIZE
@@ -59,7 +59,7 @@ func (ps *ChineseService) ApiServiceChineseBookList(ctx *gin.Context, page, leve
 /**
  * @Description 获取中文绘本详情数据
  */
-func (ps *ChineseService) ApiServiceChineseBookInfo(ctx *gin.Context, bookId string) (resp response.ChineseBookInfoResponse, apiErr api.Error) {
+func (ps *WechatService) ApiServiceChineseBookInfo(ctx *gin.Context, bookId string) (resp response.ChineseBookInfoResponse, apiErr api.Error) {
 
 	// 从DB获取绘本详情数据
 	bookInfo, err := ps.ServiceDBFindBookInfo(bookId)
@@ -78,7 +78,7 @@ func (ps *ChineseService) ApiServiceChineseBookInfo(ctx *gin.Context, bookId str
 /**
  * @Description 获取中文绘本搜索数据
  */
-func (ps *ChineseService) ApiServiceChineseBookSearch(ctx *gin.Context, page int, value string) (resp response.ChineseBookResponse, apiErr api.Error) {
+func (ps *WechatService) ApiServiceChineseBookSearch(ctx *gin.Context, page int, value string) (resp response.ChineseBookResponse, apiErr api.Error) {
 	utils.DefaultIntOne(&page)
 	size := 100
 	offset := size * (page - 1)
@@ -99,7 +99,7 @@ func (ps *ChineseService) ApiServiceChineseBookSearch(ctx *gin.Context, page int
 	return
 }
 
-func (ps *ChineseService) ApiServiceEnglishBookList(ctx *gin.Context, typeId, offset int) (resp response.EnglishBookResponse, apiErr api.Error) {
+func (ps *WechatService) ApiServiceEnglishBookList(ctx *gin.Context, typeId, offset int) (resp response.EnglishBookResponse, apiErr api.Error) {
 	// 创建要发送的数据
 	data := request.RequestEnglishParam{
 		HTs:        "1685021025740e",
@@ -156,7 +156,7 @@ func (ps *ChineseService) ApiServiceEnglishBookList(ctx *gin.Context, typeId, of
 	return
 }
 
-func (ps *ChineseService) ApiServiceEnglishBookInfo(ctx *gin.Context, bookId int) (resp response.EnglishBookInfoResponse, apiErr api.Error) {
+func (ps *WechatService) ApiServiceEnglishBookInfo(ctx *gin.Context, bookId int) (resp response.EnglishBookInfoResponse, apiErr api.Error) {
 
 	// 创建要发送的数据
 	data := request.RequestEnglishInfoParam{
