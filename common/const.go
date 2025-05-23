@@ -1,6 +1,6 @@
 package common
 
-const DEFAULT_PAGE_SIZE = 10
+const DEFAULT_PAGE_SIZE = 12
 
 const (
 	// 定义最终生成的nc文件的目录
