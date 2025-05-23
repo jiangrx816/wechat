@@ -96,14 +96,14 @@ func (ps *WechatService) ApiServiceChineseBookSearch(ctx *gin.Context, page int,
 /**
  * @Description 获取英文绘本列表
  **/
-func (ps *WechatService) ApiServiceEnglishBookList(ctx *gin.Context, page, level int) (resp response.ChineseBookResponse, apiErr api.Error) {
+func (ps *WechatService) ApiServiceEnglishBookList(ctx *gin.Context, page, level int) (resp response.EnglishBookResponse, apiErr api.Error) {
 	utils.DefaultIntOne(&page)
 	utils.DefaultIntOne(&level)
 	size := common.DEFAULT_PAGE_SIZE
 	offset := size * (page - 1)
 
 	// 从DB获取绘本列表数据
-	total, bookList, err := ps.ServiceDBFindBookList(level, size, offset)
+	total, bookList, err := ps.ServiceDBFindEnglishBookList(level, size, offset)
 	if condition := err != nil; condition {
 		apiErr = errs.NewError(err.Error())
 		return
