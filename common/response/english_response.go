@@ -25,5 +25,6 @@ type ResponseEnglishBookInfo struct {
 	BookId   string `json:"book_id"`
 	Mp3      string `json:"mp3"`
 	Pic      string `json:"pic"`
+	BPic     string `json:"b_pic"`
 	Position uint8  `json:"position"`
 }

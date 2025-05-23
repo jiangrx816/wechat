@@ -1,6 +1,8 @@
 package wechat_service
 
 import (
+	"strings"
+
 	"github.com/jiangrx816/wechat/common/response"
 	"github.com/jiangrx816/wechat/model"
 )
@@ -24,7 +26,7 @@ func (ps *WechatService) ServiceDBFindEnglishBookList(tType, size, offset int) (
 		temp.Id = item.Id
 		temp.BookId = item.BookId
 		temp.Title = item.Title
-		temp.Icon = item.Icon
+		temp.Icon = strings.ReplaceAll(item.Icon, "https", "http")
 		temp.Type = item.Type
 		temp.Position = item.Position
 		bookList = append(bookList, temp)
@@ -46,6 +48,12 @@ func (ps *WechatService) ServiceDBFindEnglishBookInfo(bookId string) (bookInfoLi
 	db := model.Default().Model(&model.SEnglishPictureInfo{}).Debug()
 	db = db.Where("book_id = ? and status = 1", bookId).Order("position asc")
 	err = db.Find(&bookInfoList).Error
+
+	for index, item := range bookInfoList {
+		bookInfoList[index].Mp3 = strings.ReplaceAll(item.Mp3, "https", "http")
+		bookInfoList[index].Pic = strings.ReplaceAll(item.Pic, "https", "http")
+		bookInfoList[index].BPic = strings.ReplaceAll(item.BPic, "https", "http")
+	}
 	return
 }
 
@@ -69,7 +77,7 @@ func (ps *WechatService) ServiceDBFindEnglishBookSearch(name string, size, offse
 		temp.Id = item.Id
 		temp.BookId = item.BookId
 		temp.Title = item.Title
-		temp.Icon = item.Icon
+		temp.Icon = strings.ReplaceAll(item.Icon, "https", "http")
 		temp.Type = item.Type
 		temp.Position = item.Position
 		bookList = append(bookList, temp)
