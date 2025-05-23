@@ -1,4 +1,4 @@
-package chinese_handler
+package wechat_handler
 
 import (
 	"strconv"

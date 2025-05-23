@@ -20,6 +20,6 @@ func All() func(r *gin.Engine) {
 		Api(prefixRouter)
 
 		// 中文绘本路由
-		ChineseBookApi(prefixRouter)
+		WechatApi(prefixRouter)
 	}
 }

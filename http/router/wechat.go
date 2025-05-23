@@ -2,13 +2,13 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/jiangrx816/wechat/http/handler/chinese_handler"
+	"github.com/jiangrx816/wechat/http/handler/wechat_handler"
 )
 
-func ChineseBookApi(r *gin.RouterGroup) {
+func WechatApi(r *gin.RouterGroup) {
 
 	prefixRouter := r.Group("v1").Use()
-	apiHandler := chinese_handler.NewChineseHandler()
+	apiHandler := wechat_handler.NewWechatHandler()
 	{
 		// 绘本栏目
 		prefixRouter.GET("/init/getCategoryList", apiHandler.ApiGetCategoryList)
