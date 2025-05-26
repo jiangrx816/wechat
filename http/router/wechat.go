@@ -26,5 +26,13 @@ func WechatApi(r *gin.RouterGroup) {
 		prefixRouter.GET("/english/getBookSearch", apiHandler.ApiEnglishBookSearch)
 		// 处理数据
 		prefixRouter.POST("/english/handleData", apiHandler.ApiEnglishHandleData)
+
+		//古诗绘本列表
+		prefixRouter.GET("/poetry/getBookList", apiHandler.ApiPoetryBookList)
+		//古诗绘本详情
+		prefixRouter.GET("/poetry/getBookInfo", apiHandler.ApiPoetryBookInfo)
+
+		//微信key
+		prefixRouter.GET("/wechat/signature", apiHandler.ApiWechatSignature)
 	}
 }
