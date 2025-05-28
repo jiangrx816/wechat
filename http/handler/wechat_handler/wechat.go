@@ -14,7 +14,9 @@ import (
 )
 
 /**
+ * ApiGetCategoryList
  * @Description 获取初始的栏目列表
+ * @param ctx
  **/
 func (ph *WechatHandler) ApiGetCategoryList(ctx *gin.Context) {
 	typeId, _ := strconv.Atoi(ctx.Query("type"))
@@ -27,7 +29,9 @@ func (ph *WechatHandler) ApiGetCategoryList(ctx *gin.Context) {
 }
 
 /**
+ * ApiChineseBookList
  * @Description 获取中文绘本列表
+ * @param ctx
  **/
 func (ph *WechatHandler) ApiChineseBookList(ctx *gin.Context) {
 	page, _ := strconv.Atoi(ctx.Query("page"))
@@ -42,7 +46,9 @@ func (ph *WechatHandler) ApiChineseBookList(ctx *gin.Context) {
 }
 
 /**
+ * ApiChineseBookInfo
  * @Description 获取中文绘本详情
+ * @param ctx
  **/
 func (ph *WechatHandler) ApiChineseBookInfo(ctx *gin.Context) {
 	bookId := ctx.Query("book_id")
@@ -55,7 +61,9 @@ func (ph *WechatHandler) ApiChineseBookInfo(ctx *gin.Context) {
 }
 
 /**
+ * ApiChineseBookSearch
  * @Description 获取中文绘本搜索列表
+ * @param ctx
  **/
 func (ph *WechatHandler) ApiChineseBookSearch(ctx *gin.Context) {
 	page, _ := strconv.Atoi(ctx.Query("page"))
@@ -69,7 +77,9 @@ func (ph *WechatHandler) ApiChineseBookSearch(ctx *gin.Context) {
 }
 
 /**
+ * ApiEnglishBookList
  * @Description 获取中文绘本列表
+ * @param ctx
  **/
 func (ph *WechatHandler) ApiEnglishBookList(ctx *gin.Context) {
 	page, _ := strconv.Atoi(ctx.Query("page"))
@@ -84,7 +94,9 @@ func (ph *WechatHandler) ApiEnglishBookList(ctx *gin.Context) {
 }
 
 /**
+ * ApiEnglishBookInfo
  * @Description 获取英文绘本详情
+ * @param ctx
  **/
 func (ph *WechatHandler) ApiEnglishBookInfo(ctx *gin.Context) {
 	bookId := ctx.Query("book_id")
@@ -97,7 +109,9 @@ func (ph *WechatHandler) ApiEnglishBookInfo(ctx *gin.Context) {
 }
 
 /**
+ * ApiEnglishBookSearch
  * @Description 获取英文绘本搜索列表
+ * @param ctx
  **/
 func (ph *WechatHandler) ApiEnglishBookSearch(ctx *gin.Context) {
 	page, _ := strconv.Atoi(ctx.Query("page"))
@@ -111,7 +125,9 @@ func (ph *WechatHandler) ApiEnglishBookSearch(ctx *gin.Context) {
 }
 
 /**
+ * ApiEnglishHandleData
  * @Description 处理数据
+ * @param ctx
  **/
 func (ph *WechatHandler) ApiEnglishHandleData(ctx *gin.Context) {
 	var json request.EnglishHandleDataRequest
@@ -127,7 +143,11 @@ func (ph *WechatHandler) ApiEnglishHandleData(ctx *gin.Context) {
 	ctx.JSON(errs.SucResp(response))
 }
 
-// ApiPoetryBookList 古诗绘本-列表
+/**
+ * ApiPoetryBookList
+ * @Description 古诗绘本-列表
+ * @param ctx
+ **/
 func (ph *WechatHandler) ApiPoetryBookList(ctx *gin.Context) {
 	page, _ := strconv.Atoi(ctx.Query("page"))
 	limit, _ := strconv.Atoi(ctx.Query("limit"))
@@ -140,7 +160,11 @@ func (ph *WechatHandler) ApiPoetryBookList(ctx *gin.Context) {
 	ctx.JSON(errs.SucResp(response))
 }
 
-// ApiPoetryBookInfo 古诗绘本-详情
+/**
+ * ApiPoetryBookInfo
+ * @Description 古诗绘本-详情
+ * @param ctx
+ **/
 func (ph *WechatHandler) ApiPoetryBookInfo(ctx *gin.Context) {
 	id, _ := strconv.Atoi(ctx.Query("book_id"))
 	response, err := ph.service.FindPoetryBookInfo(id)
@@ -151,7 +175,31 @@ func (ph *WechatHandler) ApiPoetryBookInfo(ctx *gin.Context) {
 	ctx.JSON(errs.SucResp(response))
 }
 
-// ApiWechatSignature 微信签名
+/**
+ * ApiMathCalculationList
+ * @Description 数学计算-列表
+ * @param ctx
+ **/
+func (ph *WechatHandler) ApiMathCalculationList(ctx *gin.Context) {
+	// 值, 几十之内
+	value, _ := strconv.Atoi(ctx.Query("value"))
+	// 限制, 每次生成多少个
+	limit, _ := strconv.Atoi(ctx.Query("limit"))
+	// 方式, 1 不进位加法，2 进位加法，3 不退位减法，4 退位减法
+	forward, _ := strconv.Atoi(ctx.Query("forward"))
+	response, err := ph.service.ApiServiceMathCalculationList(ctx, forward, value, limit)
+	if err != nil {
+		ctx.JSON(errs.ErrResp(err))
+		return
+	}
+	ctx.JSON(errs.SucResp(response))
+}
+
+/**
+ * ApiWechatSignature
+ * @Description: 微信签名
+ * @param ctx
+ */
 func (ph *WechatHandler) ApiWechatSignature(ctx *gin.Context) {
 	rawURL := ctx.Query("url")
 	if rawURL == "" {

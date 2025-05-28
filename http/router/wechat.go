@@ -32,6 +32,9 @@ func WechatApi(r *gin.RouterGroup) {
 		//古诗绘本详情
 		prefixRouter.GET("/poetry/getBookInfo", apiHandler.ApiPoetryBookInfo)
 
+		// 数学计算相关
+		prefixRouter.GET("/math/getCalculationList", apiHandler.ApiMathCalculationList)
+
 		//微信key
 		prefixRouter.GET("/wechat/signature", apiHandler.ApiWechatSignature)
 	}
