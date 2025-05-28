@@ -12,7 +12,7 @@ import (
 	"time"
 
 	"github.com/go-resty/resty/v2"
-	"github.com/jiangrx816/wechat/common"
+	"github.com/spf13/viper"
 )
 
 var (
@@ -46,11 +46,13 @@ func getAccessToken() (string, error) {
 		return accessToken, nil
 	}
 
+	appId := viper.GetViper().GetString("mini.app_id")
+	appSecret := viper.GetViper().GetString("mini.app_secret")
 	resp, err := client.R().
 		SetQueryParams(map[string]string{
 			"grant_type": "client_credential",
-			"appid":      common.AppID,
-			"secret":     common.AppSecret,
+			"appid":      appId,
+			"secret":     appSecret,
 		}).
 		Get("https://api.weixin.qq.com/cgi-bin/token")
 

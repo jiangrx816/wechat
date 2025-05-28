@@ -6,9 +6,9 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/jiangrx816/wechat/common"
 	"github.com/jiangrx816/wechat/common/request"
 	"github.com/jiangrx816/wechat/utils/errs"
+	"github.com/spf13/viper"
 
 	"github.com/gin-gonic/gin"
 )
@@ -175,8 +175,9 @@ func (ph *WechatHandler) ApiWechatSignature(ctx *gin.Context) {
 	timestamp := time.Now().Unix()
 	signature := ph.service.ApiServiceSalcSignature(ticket, nonceStr, timestamp, urlDecoded)
 
+	appId := viper.GetViper().GetString("mini.app_id")
 	ctx.JSON(http.StatusOK, gin.H{
-		"appId":     common.AppID,
+		"appId":     appId,
 		"nonceStr":  nonceStr,
 		"timestamp": timestamp,
 		"signature": signature,
