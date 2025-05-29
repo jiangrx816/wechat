@@ -117,155 +117,129 @@ func (ps *WechatService) formatMathAddSubCalculationData(count int, value int) (
 
 // @Description 生成不超过5的加法题目
 func (ps *WechatService) generateAdditionWithinFive(count int, max int) [][2]int {
-	rand.Seed(time.Now().UnixNano())
-	problems := make([][2]int, 0, count)
-	seen := make(map[string]bool) // 用于检测重复的映射
-	maxNextValue := max + 1
+	all := make([][2]int, 0)
 
-	for len(problems) < count {
-		// 生成第一个数 (0-5)
-		a := rand.Intn(maxNextValue)
-		// 第二个数的最大可能值 (确保 a+b <=5)
-		maxB := max - a
-		// 生成第二个数 (0到maxB)
-		b := rand.Intn(maxB + 1)
-
-		// 创建唯一标识符（考虑加法交换律）
-		key1 := fmt.Sprintf("%d+%d", a, b)
-		key2 := fmt.Sprintf("%d+%d", b, a)
-
-		// 检查是否已存在相同算式（包括交换顺序的情况）
-		if !seen[key1] && !seen[key2] {
-			// 标记该算式和其交换形式为已见
-			seen[key1] = true
-			seen[key2] = true
-			// 添加到结果集
-			problems = append(problems, [2]int{a, b})
+	for a := 0; a <= max; a++ {
+		for b := a; b <= max; b++ { // b >= a，避免重复
+			if a+b <= max {
+				all = append(all, [2]int{a, b})
+			}
 		}
 	}
-	return problems
+
+	if count > len(all) {
+		count = len(all) // 避免死循环
+	}
+
+	rand.Seed(time.Now().UnixNano())
+	rand.Shuffle(len(all), func(i, j int) {
+		all[i], all[j] = all[j], all[i]
+	})
+
+	return all[:count]
 }
 
 // @Description 生成10以内减法算式
 func (ps *WechatService) generateSubtractionWithinTen(count int, max int) [][2]int {
-	rand.Seed(time.Now().UnixNano())
-	problems := make([][2]int, 0, count)
-	seen := make(map[string]bool) // 用于检测重复的映射
-
-	maxNextValue := max + 1
-	for len(problems) < count {
-		// 生成被减数 (0-10)
-		a := rand.Intn(maxNextValue)
-		// 生成减数 (0-a)
-		b := rand.Intn(a + 1)
-
-		// 创建唯一标识符
-		key := fmt.Sprintf("%d-%d", a, b)
-
-		// 检查是否已存在相同算式
-		if seen[key] {
-			continue
+	all := make([][2]int, 0)
+	for a := 0; a <= max; a++ {
+		for b := 0; b <= a; b++ {
+			all = append(all, [2]int{a, b})
 		}
-
-		// 添加到结果集并标记为已见
-		seen[key] = true
-		problems = append(problems, [2]int{a, b})
 	}
-	return problems
+
+	if count > len(all) {
+		count = len(all)
+	}
+
+	rand.Seed(time.Now().UnixNano())
+	rand.Shuffle(len(all), func(i, j int) {
+		all[i], all[j] = all[j], all[i]
+	})
+
+	return all[:count]
 }
 
 // @Description 不进位加法——生成严格不进位加法题目
 func (ps *WechatService) generateStrictNonCarryAdditions(count int, max int) [][2]int {
-	rand.Seed(time.Now().UnixNano())
-	problems := make([][2]int, 0, count)
-	seen := make(map[string]bool) // 用于检测重复的映射
+	all := make([][2]int, 0)
+	seen := make(map[string]bool)
 
-	for len(problems) < count {
-		// 尝试生成满足条件的算式
-		a := rand.Intn(max) + 1
-		b := rand.Intn(max) + 1
-
-		// 创建唯一标识符（考虑加法交换律）
-		key1 := fmt.Sprintf("%d+%d", a, b)
-		key2 := fmt.Sprintf("%d+%d", b, a)
-
-		// 检查是否已存在相同算式（包括交换顺序的情况）
-		if seen[key1] || seen[key2] {
-			continue
-		}
-
-		// 根据max值应用不同规则
-		valid := false
-		if max <= 20 {
-			// 20以内：允许个位数，和≤20，不进位
-			valid = a+b <= 20 && (a%10)+(b%10) < 10
-		} else {
-			// 超过20：不允许个位数(≥10)，和≤max，不进位
-			valid = a >= 10 && b >= 10 &&
-				a+b <= max &&
-				(a%10)+(b%10) < 10
-		}
-
-		if valid {
-			// 标记该算式和其交换形式为已见
-			seen[key1] = true
-			seen[key2] = true
-			// 添加到结果集
-			problems = append(problems, [2]int{a, b})
+	for a := 1; a <= max; a++ {
+		for b := a; b <= max; b++ { // b >= a，避免交换律重复
+			// 规则判断
+			valid := false
+			if max <= 20 {
+				valid = a+b <= 20 && (a%10)+(b%10) < 10
+			} else {
+				valid = a >= 10 && b >= 10 &&
+					a+b <= max &&
+					(a%10)+(b%10) < 10
+			}
+			if valid {
+				key := fmt.Sprintf("%d+%d", a, b)
+				if !seen[key] {
+					seen[key] = true
+					all = append(all, [2]int{a, b})
+				}
+			}
 		}
 	}
-	return problems
+
+	// 限制返回数量，避免超出范围
+	if count > len(all) {
+		count = len(all)
+	}
+
+	// 打乱并选取
+	rand.Seed(time.Now().UnixNano())
+	rand.Shuffle(len(all), func(i, j int) {
+		all[i], all[j] = all[j], all[i]
+	})
+
+	return all[:count]
 }
 
 // @Description 进位加法-生成进位加法题目（严格限制和的范围）
 func (ps *WechatService) generateCarryAdditionProblems(count int, max int) [][2]int {
-	rand.Seed(time.Now().UnixNano())
-	problems := make([][2]int, 0, count)
-	seen := make(map[string]bool) // 用于检测重复的映射
+	all := make([][2]int, 0)
+	seen := make(map[string]bool)
 
-	for len(problems) < count {
-		var a, b int
+	lowLimit := 1
+	if max > 20 {
+		lowLimit = 10
+	}
 
-		if max <= 20 {
-			// 20以内：允许个位数
-			a = rand.Intn(max-1) + 1 // 1-19
-			b = rand.Intn(max-1) + 1 // 1-19
-		} else {
-			// 超过20：不允许个位数（必须≥10）
-			a = rand.Intn(max-10) + 10 // 10-(max-1)
-			b = rand.Intn(max-10) + 10 // 10-(max-1)
-		}
-
-		// 创建唯一标识符（考虑加法交换律）
-		key1 := fmt.Sprintf("%d+%d", a, b)
-		key2 := fmt.Sprintf("%d+%d", b, a)
-
-		// 检查是否已存在相同算式（包括交换顺序的情况）
-		if seen[key1] || seen[key2] {
-			continue
-		}
-
-		// 检查进位条件：个位相加≥10（需要进位）
-		if (a%10)+(b%10) >= 10 {
-			// 20以内额外条件和≤20
-			if max <= 20 && a+b <= 20 {
-				// 标记该算式和其交换形式为已见
-				seen[key1] = true
-				seen[key2] = true
-				// 添加到结果集
-				problems = append(problems, [2]int{a, b})
-			}
-			// 超过20时，和不超过max
-			if max > 20 && a+b <= max {
-				// 标记该算式和其交换形式为已见
-				seen[key1] = true
-				seen[key2] = true
-				// 添加到结果集
-				problems = append(problems, [2]int{a, b})
+	for a := lowLimit; a <= max; a++ {
+		for b := a; b <= max; b++ { // b >= a 避免重复
+			if (a%10)+(b%10) >= 10 { // 进位条件
+				if max <= 20 && a+b <= 20 {
+					key := fmt.Sprintf("%d+%d", a, b)
+					if !seen[key] {
+						seen[key] = true
+						all = append(all, [2]int{a, b})
+					}
+				} else if max > 20 && a+b <= max {
+					key := fmt.Sprintf("%d+%d", a, b)
+					if !seen[key] {
+						seen[key] = true
+						all = append(all, [2]int{a, b})
+					}
+				}
 			}
 		}
 	}
-	return problems
+
+	if count > len(all) {
+		count = len(all) // 防止请求超过可能题目数量
+	}
+
+	rand.Seed(time.Now().UnixNano())
+	rand.Shuffle(len(all), func(i, j int) {
+		all[i], all[j] = all[j], all[i]
+	})
+
+	return all[:count]
 }
 
 // @Description 不退位减法——生成不退位减法题目
@@ -318,50 +292,45 @@ func (ps *WechatService) generateNonBorrowSubtraction(count int, max int) [][2]i
 
 // @Description 退位减法——生成退位减法题目
 func (ps *WechatService) generateBorrowSubtraction(count int, max int) [][2]int {
-	rand.Seed(time.Now().UnixNano())
-	problems := make([][2]int, 0, count)
-	seen := make(map[string]bool) // 用于检测重复的映射
+	all := make([][2]int, 0)
+	seen := make(map[string]bool)
 
-	for len(problems) < count {
-		var a, b int
+	lowLimit := 1
+	if max > 20 {
+		lowLimit = 10
+	}
 
-		if max <= 20 {
-			// 20以内：允许个位数
-			a = rand.Intn(max) + 1 // 1-20
-			b = rand.Intn(max) + 1 // 1-20
-		} else {
-			// 超过20：不允许个位数（必须≥10）
-			a = rand.Intn(max-10) + 10 // 10-max
-			b = rand.Intn(max-10) + 10 // 10-max
-		}
-
-		// 创建唯一标识符（减法顺序很重要）
-		key := fmt.Sprintf("%d-%d", a, b)
-
-		// 检查是否已存在相同算式
-		if seen[key] {
-			continue
-		}
-
-		// 共同条件：被减数>减数且个位<减数个位（需要退位）
-		if a > b && (a%10) < (b%10) {
-			// 20以内额外条件和≤20
-			if max <= 20 && a <= 20 && b <= 20 {
-				// 标记该算式为已见
-				seen[key] = true
-				// 添加到结果集
-				problems = append(problems, [2]int{a, b})
-			}
-			// 超过20时，和不超过max
-			if max > 20 && a <= max && b <= max {
-				// 标记该算式为已见
-				seen[key] = true
-				// 添加到结果集
-				problems = append(problems, [2]int{a, b})
+	for a := lowLimit; a <= max; a++ {
+		for b := lowLimit; b <= max; b++ {
+			if a > b && (a%10) < (b%10) { // 需要借位的条件
+				// 额外条件
+				if max <= 20 && a <= 20 && b <= 20 {
+					key := fmt.Sprintf("%d-%d", a, b)
+					if !seen[key] {
+						seen[key] = true
+						all = append(all, [2]int{a, b})
+					}
+				} else if max > 20 && a <= max && b <= max {
+					key := fmt.Sprintf("%d-%d", a, b)
+					if !seen[key] {
+						seen[key] = true
+						all = append(all, [2]int{a, b})
+					}
+				}
 			}
 		}
 	}
-	return problems
+
+	if count > len(all) {
+		count = len(all)
+	}
+
+	rand.Seed(time.Now().UnixNano())
+	rand.Shuffle(len(all), func(i, j int) {
+		all[i], all[j] = all[j], all[i]
+	})
+
+	return all[:count]
 }
 
 // @Description 生成100以内加减法算式
