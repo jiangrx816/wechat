@@ -185,7 +185,8 @@ func (ph *WechatHandler) ApiMathCalculationList(ctx *gin.Context) {
 	value, _ := strconv.Atoi(ctx.Query("value"))
 	// 限制, 每次生成多少个
 	limit, _ := strconv.Atoi(ctx.Query("limit"))
-	// 方式, 1 不进位加法，2 进位加法，3 不退位减法，4 退位减法
+	// 方式, 1:5以内的加法 2:10以内的减法 3:10以内加减 4:20以内加法(不进位) 5:20以内减法(不退位)
+	// 6:20以内加法(进位) 7:20以内减法(退位) 8:20以内加减 9:100以内加法 10:100以内减法 11:100以内加减
 	forward, _ := strconv.Atoi(ctx.Query("forward"))
 	response, err := ph.service.ApiServiceMathCalculationList(ctx, forward, value, limit)
 	if err != nil {
